@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conversor de Música MP3</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        #progressContainer {
+            width: 100%;
+            background-color: #f3f3f3;
+            border-radius: 5px;
+            margin-top: 20px;
+            display: none;
+        }
+        #progressBar {
+            width: 0;
+            height: 30px;
+            background-color: #4caf50;
+            text-align: center;
+            color: white;
+            line-height: 30px;
+            border-radius: 5px;
+        }
+
+        /* Estilos para o footer */
+        footer {
+            background-color: #282a36;  /* Fundo escuro */
+            color: #f8f8f2;             /* Texto claro */
+            padding: 20px 0;
+            text-align: center;
+            margin-top: 40px;
+            border-top: 2px solid var(--purple);
+        }
+
+        footer a {
+            color: var(--cyan);
+            text-decoration: none;
+            margin: 0 15px;
+            font-size: 1.1rem;
+            transition: color 0.3s ease;
+        }
+
+        footer a:hover {
+            color: var(--yellow);
+        }
+
+        footer .footer-text {
+            font-size: 0.9rem;
+            color: var(--comment);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Conversor de Música MP3</h1>
+
+        <textarea id="urls" placeholder="Digite as URLs, uma por linha..." rows="10"></textarea>
+        <button id="baixarBtn">Baixar Músicas</button>
+
+        <div id="progressContainer">
+            <div id="progressBar">0%</div>
+        </div>
+
+        <div id="linksDownload">
+            <!-- Links de arquivos para download -->
+        </div>
+
+        <!-- Botão de Limpar -->
+        <button id="limparBtn">Limpar Arquivos</button>
+    </div>
+
+    <footer>
+        <div class="footer-text">
+            <p>&copy; 2024 Conversor de Música MP3. Todos os direitos reservados.</p>
+        </div>
+        <div>
+            <a href="#">Sobre</a>
+            <a href="#">Privacidade</a>
+            <a href="#">Termos de Uso</a>
+        </div>
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#baixarBtn').click(function() {
+                var urls = $('#urls').val();
+                
+                if (!urls.trim()) {
+                    alert("Por favor, insira pelo menos uma URL.");
+                    return;
+                }
+
+                // Exibe a barra de progresso
+                $('#progressContainer').show();
+
+                $.ajax({
+                    url: '/baixar',
+                    type: 'POST',
+                    data: { 'urls': urls },
+                    success: function(response) {
+                        alert(response.message);
+
+                        // Exibe links de download para o usuário
+                        if (response.status === "sucesso") {
+                            $('#linksDownload').html('');
+                            response.files.forEach(function(file) {
+                                $('#linksDownload').append(
+                                    '<a href="/baixar_arquivo/' + file + '" download>' + file + '</a><br>'
+                                );
+                            });
+                        }
+
+                        // Finaliza a barra de progresso
+                        $('#progressBar').css('width', '100%');
+                        $('#progressBar').text('100%');
+                    },
+                    error: function(error) {
+                        alert("Erro ao iniciar o download.");
+                    }
+                });
+
+                // Simula o progresso da barra de forma fictícia (a barra pode ser ajustada de acordo com o progresso real)
+                let progress = 0;
+                let interval = setInterval(function() {
+                    if (progress < 100) {
+                        progress += 10;
+                        $('#progressBar').css('width', progress + '%');
+                        $('#progressBar').text(progress + '%');
+                    } else {
+                        clearInterval(interval);
+                    }
+                }, 500);
+            });
+
+            // Função para limpar arquivos após o download
+            $('#limparBtn').click(function() {
+                $.ajax({
+                    url: '/limpar',
+                    type: 'POST',
+                    success: function(response) {
+                        alert(response.message);
+                        $('#linksDownload').html('');
+                    },
+                    error: function(error) {
+                        alert("Erro ao limpar arquivos.");
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

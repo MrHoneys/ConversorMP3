@@ -1,0 +1,149 @@
+/* Definindo as cores principais do tema Dracula */
+:root {
+    --background: #282a36;  /* Fundo escuro */
+    --foreground: #f8f8f2;  /* Texto claro */
+    --selection: #44475a;   /* Cor de seleção */
+    --comment: #6272a4;     /* Comentários */
+    --cyan: #8be9fd;        /* Cyan */
+    --green: #50fa7b;       /* Verde */
+    --orange: #ffb86c;      /* Laranja */
+    --pink: #ff79c6;        /* Rosa */
+    --purple: #bd93f9;      /* Roxo */
+    --red: #ff5555;         /* Vermelho */
+    --yellow: #f1fa8c;      /* Amarelo */
+}
+
+/* Resetando o padding e margin para garantir consistência */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Corpo da página */
+body {
+    background-color: var(--background);
+    color: var(--foreground);
+    font-family: 'Arial', sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    padding: 0 20px;
+    margin: 0;
+}
+
+/* Título principal */
+h1 {
+    text-align: center;
+    color: var(--purple);
+    margin-top: 50px;
+    font-size: 3rem;
+}
+
+/* Caixa de entrada de texto */
+textarea {
+    width: 100%;
+    height: 200px;
+    padding: 15px;
+    margin-top: 20px;
+    border: 2px solid var(--comment);
+    border-radius: 8px;
+    background-color: #1e1f29;
+    color: var(--foreground);
+    font-size: 1.2rem;
+    transition: border-color 0.3s ease-in-out;
+}
+
+textarea:focus {
+    border-color: var(--cyan);
+    outline: none;
+}
+
+/* Botões */
+button {
+    background-color: var(--purple);
+    color: var(--foreground);
+    font-size: 1.2rem;
+    padding: 10px 20px;
+    margin-top: 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: var(--pink);
+}
+
+/* Barra de progresso */
+#progressContainer {
+    margin-top: 30px;
+    width: 100%;
+    background-color: var(--selection);
+    border-radius: 10px;
+    display: none;
+}
+
+#progressBar {
+    height: 30px;
+    background-color: var(--green);
+    border-radius: 10px;
+    color: var(--foreground);
+    text-align: center;
+    line-height: 30px;
+    font-weight: bold;
+}
+
+/* Links de download */
+#linksDownload {
+    margin-top: 30px;
+}
+
+#linksDownload a {
+    color: var(--cyan);
+    font-size: 1.2rem;
+    text-decoration: none;
+    display: block;
+    margin-bottom: 10px;
+    transition: color 0.3s ease;
+}
+
+#linksDownload a:hover {
+    color: var(--yellow);
+}
+
+/* Botão Limpar */
+#limparBtn {
+    background-color: var(--red);
+    color: var(--foreground);
+    font-size: 1.2rem;
+    padding: 10px 20px;
+    margin-top: 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#limparBtn:hover {
+    background-color: var(--orange);
+}
+
+/* Estilo para mensagens de erro ou sucesso */
+.alert {
+    padding: 15px;
+    margin-top: 20px;
+    border-radius: 8px;
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+.alert.success {
+    background-color: var(--green);
+    color: var(--background);
+}
+
+.alert.error {
+    background-color: var(--red);
+    color: var(--background);
+}
