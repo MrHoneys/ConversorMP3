@@ -11,21 +11,6 @@ TEMP_DIR = 'downloads'
 if not os.path.exists(TEMP_DIR):
     os.makedirs(TEMP_DIR)
 
-# Função para exibir a logo na inicialização (opcional)
-def exibir_logo():
-    print("""
-##############################################
-#                                            #
-#    Bem vindo ao Conversor de Música MP3    #
-#                                            #
-##############################################
-#                                            #
-#    Versão: 1.0                             #
-#    Criado pelo: Julio                      #
-#                                            #
-##############################################
-""")
-
 # Função para buscar informações do vídeo (nome da música, duração, plataforma)
 def get_video_info(url):
     # Usando yt-dlp para pegar informações do vídeo
@@ -52,17 +37,25 @@ def get_video_info(url):
     }
 
 # Função para baixar a música e salvar no servidor
-def baixar_musica(url, progress_callback):
-    opcoes = {
-        'format': 'bestaudio/best',
-        'postprocessors': [{
-            'key': 'FFmpegExtractAudio',
-            'preferredcodec': 'mp3',
-            'preferredquality': '192',
-        }],
-        'outtmpl': os.path.join(TEMP_DIR, '%(title)s.%(ext)s'),  # Salva a música com o nome do título na pasta temporária
-        'progress_hooks': [progress_callback],  # Chama o callback de progresso
-    }
+def baixar_musica(url, formato, progress_callback):
+    if formato == "mp3":
+        opcoes = {
+            'format': 'bestaudio/best',
+            'postprocessors': [{
+                'key': 'FFmpegExtractAudio',
+                'preferredcodec': 'mp3',
+                'preferredquality': '192',
+            }],
+            'outtmpl': os.path.join(TEMP_DIR, '%(title)s.%(ext)s'),
+            'progress_hooks': [progress_callback],
+        }
+    elif formato == "mp4":
+        opcoes = {
+            'format': 'bestvideo+bestaudio/best',
+            'outtmpl': os.path.join(TEMP_DIR, '%(title)s.%(ext)s'),
+            'progress_hooks': [progress_callback],
+        }
+
     with yt_dlp.YoutubeDL(opcoes) as ydl:
         print(f"Baixando: {url}")
         ydl.download([url])
@@ -114,7 +107,9 @@ def buscar():
 @app.route('/baixar', methods=['POST'])
 def baixar():
     urls = request.form['urls']
+    formato = request.form['formato']  # Formato escolhido pelo usuário
     urls = urls.splitlines()  # Divide as URLs separadas por linha
+
     if not urls:
         return jsonify({"status": "erro", "message": "Nenhuma URL fornecida!"})
 
@@ -122,7 +117,7 @@ def baixar():
     threads = []
     for url in urls:
         if url.strip():  # Ignora URLs vazias
-            thread = threading.Thread(target=baixar_musica, args=(url.strip(), progresso_hook))
+            thread = threading.Thread(target=baixar_musica, args=(url.strip(), formato, progresso_hook))
             thread.start()
             threads.append(thread)
 
@@ -142,5 +137,4 @@ def limpar():
 
 # Iniciar a aplicação Flask
 if __name__ == '__main__':
-    exibir_logo()
     app.run(host='0.0.0.0', port=5000, debug=True)

@@ -3,68 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Conversor de Música MP3</title>
+    <title>Conversor de Música MP3/MP4</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <style>
-        #progressContainer {
-            width: 100%;
-            background-color: #f3f3f3;
-            border-radius: 5px;
-            margin-top: 20px;
-            display: none;
-        }
-        #progressBar {
-            width: 0;
-            height: 30px;
-            background-color: #4caf50;
-            text-align: center;
-            color: white;
-            line-height: 30px;
-            border-radius: 5px;
-        }
-
-        /* Estilos para o footer */
-        footer {
-            background-color: #282a36;  /* Fundo escuro */
-            color: #f8f8f2;             /* Texto claro */
-            padding: 20px 0;
-            text-align: center;
-            margin-top: 40px;
-            border-top: 2px solid var(--purple);
-        }
-
-        footer a {
-            color: var(--cyan);
-            text-decoration: none;
-            margin: 0 15px;
-            font-size: 1.1rem;
-            transition: color 0.3s ease;
-        }
-
-        footer a:hover {
-            color: var(--yellow);
-        }
-
-        footer .footer-text {
-            font-size: 0.9rem;
-            color: var(--comment);
-        }
-    </style>
 </head>
 <body>
     <div class="container">
-        <h1>Conversor de Música MP3</h1>
+        <div class="header">
+            <img src="https://www.imagensanimadas.com/data/media/300/emoticon-e-smiley-natal-imagem-animada-0228.gif" alt="Emoji animado" class="emoji">
+            <h1>Conversor de Música MP3/MP4</h1>
+        </div>
 
         <textarea id="urls" placeholder="Digite as URLs, uma por linha..." rows="10"></textarea>
+
+        <label for="formato">Escolha o formato:</label>
+        <select id="formato" name="formato">
+            <option value="mp3">MP3</option>
+            <option value="mp4">MP4</option>
+        </select>
+
         <button id="baixarBtn">Baixar Músicas</button>
 
         <div id="progressContainer">
             <div id="progressBar">0%</div>
         </div>
 
-        <div id="linksDownload">
-            <!-- Links de arquivos para download -->
+        <div id="loadingMessage" class="alert-warning" style="display:none;">
+            <span>Ainda estamos finalizando...</span>
+            <img src="https://www.imagensanimadas.com/data/media/300/emoticon-e-smiley-natal-imagem-animada-0189.gif" alt="Emoticon animado" style="width: 40px; height: 40px; vertical-align: middle; margin-left: 10px;">
         </div>
+
+        <div id="linksDownload"></div>
 
         <!-- Botão de Limpar -->
         <button id="limparBtn">Limpar Arquivos</button>
@@ -72,36 +40,31 @@
 
     <footer>
         <div class="footer-text">
-            <p>&copy; 2024 Conversor de Música MP3. Todos os direitos reservados.</p>
-        </div>
-        <div>
-            <a href="#">Sobre</a>
-            <a href="#">Privacidade</a>
-            <a href="#">Termos de Uso</a>
+            <p>&copy; 2024 Conversor de Música MP3/MP4. Todos os direitos reservados.</p>
         </div>
     </footer>
-
+    
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         $(document).ready(function() {
             $('#baixarBtn').click(function() {
                 var urls = $('#urls').val();
+                var formato = $('#formato').val();  // Obter o formato escolhido
                 
                 if (!urls.trim()) {
                     alert("Por favor, insira pelo menos uma URL.");
                     return;
                 }
 
-                // Exibe a barra de progresso
+                // Exibe a barra de progresso e a mensagem de carregamento
                 $('#progressContainer').show();
+                $('#loadingMessage').show();
 
                 $.ajax({
                     url: '/baixar',
                     type: 'POST',
-                    data: { 'urls': urls },
+                    data: { 'urls': urls, 'formato': formato },  // Envia o formato junto
                     success: function(response) {
-                        alert(response.message);
-
                         // Exibe links de download para o usuário
                         if (response.status === "sucesso") {
                             $('#linksDownload').html('');
@@ -115,13 +78,23 @@
                         // Finaliza a barra de progresso
                         $('#progressBar').css('width', '100%');
                         $('#progressBar').text('100%');
+
+                        // Simula um pequeno atraso para garantir que o download está realmente finalizado
+                        setTimeout(function() {
+                            // Exibe o alerta de conclusão após o atraso
+                            alert("Download concluído com sucesso!");
+
+                            // Oculta a mensagem de carregamento após o download ser concluído
+                            $('#loadingMessage').hide();
+                        }, 1000); // Simula um atraso de 1 segundo após atingir 100%
                     },
                     error: function(error) {
                         alert("Erro ao iniciar o download.");
+                        $('#loadingMessage').hide();  // Ocultar a mensagem em caso de erro
                     }
                 });
 
-                // Simula o progresso da barra de forma fictícia (a barra pode ser ajustada de acordo com o progresso real)
+                // Simula o progresso da barra de forma fictícia
                 let progress = 0;
                 let interval = setInterval(function() {
                     if (progress < 100) {
@@ -134,7 +107,6 @@
                 }, 500);
             });
 
-            // Função para limpar arquivos após o download
             $('#limparBtn').click(function() {
                 $.ajax({
                     url: '/limpar',
