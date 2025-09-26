@@ -7,65 +7,60 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <img src="https://www.imagensanimadas.com/data/media/300/emoticon-e-smiley-natal-imagem-animada-0228.gif" alt="Emoji animado" class="emoji">
-            <h1>Conversor de Música MP3/MP4</h1>
+    <div class="wave-bg">
+        <div class="converter-box">
+            <h1>Conversor de Música</h1>
+            <p>Cole um ou mais links (um por linha) para converter em MP3 ou MP4</p>
+
+            <!-- AGORA É TEXTAREA -->
+            <textarea id="urls" placeholder="Cole os links aqui..." rows="6"></textarea>
+
+            <div class="options">
+                <select id="formato" name="formato">
+                    <option value="mp3">MP3</option>
+                    <option value="mp4">MP4</option>
+                </select>
+                <button id="baixarBtn">Converter</button>
+            </div>
+
+            <div id="progressContainer">
+                <div id="progressBar">0%</div>
+            </div>
+
+            <div id="loadingMessage" class="alert-warning" style="display:none;">
+                <span>Ainda estamos finalizando...</span>
+            </div>
+
+            <div id="linksDownload"></div>
+
+            <button id="limparBtn" class="limpar">Limpar Arquivos</button>
         </div>
-
-        <textarea id="urls" placeholder="Digite as URLs, uma por linha..." rows="10"></textarea>
-
-        <label for="formato">Escolha o formato:</label>
-        <select id="formato" name="formato">
-            <option value="mp3">MP3</option>
-            <option value="mp4">MP4</option>
-        </select>
-
-        <button id="baixarBtn">Baixar Músicas</button>
-
-        <div id="progressContainer">
-            <div id="progressBar">0%</div>
-        </div>
-
-        <div id="loadingMessage" class="alert-warning" style="display:none;">
-            <span>Ainda estamos finalizando...</span>
-            <img src="https://www.imagensanimadas.com/data/media/300/emoticon-e-smiley-natal-imagem-animada-0189.gif" alt="Emoticon animado" style="width: 40px; height: 40px; vertical-align: middle; margin-left: 10px;">
-        </div>
-
-        <div id="linksDownload"></div>
-
-        <!-- Botão de Limpar -->
-        <button id="limparBtn">Limpar Arquivos</button>
     </div>
 
     <footer>
-        <div class="footer-text">
-            <p>&copy; 2024 Conversor de Música MP3/MP4. Todos os direitos reservados.</p>
-        </div>
+        <p>&copy; 2024 Conversor de Música MP3/MP4 - Todos os direitos reservados.</p>
     </footer>
-    
+
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         $(document).ready(function() {
             $('#baixarBtn').click(function() {
-                var urls = $('#urls').val();
-                var formato = $('#formato').val();  // Obter o formato escolhido
+                var urls = $('#urls').val().trim();
+                var formato = $('#formato').val();
                 
-                if (!urls.trim()) {
-                    alert("Por favor, insira pelo menos uma URL.");
+                if (!urls) {
+                    alert("Por favor, insira pelo menos um link.");
                     return;
                 }
 
-                // Exibe a barra de progresso e a mensagem de carregamento
                 $('#progressContainer').show();
                 $('#loadingMessage').show();
 
                 $.ajax({
                     url: '/baixar',
                     type: 'POST',
-                    data: { 'urls': urls, 'formato': formato },  // Envia o formato junto
+                    data: { 'urls': urls, 'formato': formato },
                     success: function(response) {
-                        // Exibe links de download para o usuário
                         if (response.status === "sucesso") {
                             $('#linksDownload').html('');
                             response.files.forEach(function(file) {
@@ -74,33 +69,23 @@
                                 );
                             });
                         }
-
-                        // Finaliza a barra de progresso
-                        $('#progressBar').css('width', '100%');
-                        $('#progressBar').text('100%');
-
-                        // Simula um pequeno atraso para garantir que o download está realmente finalizado
+                        $('#progressBar').css('width', '100%').text('100%');
                         setTimeout(function() {
-                            // Exibe o alerta de conclusão após o atraso
                             alert("Download concluído com sucesso!");
-
-                            // Oculta a mensagem de carregamento após o download ser concluído
                             $('#loadingMessage').hide();
-                        }, 1000); // Simula um atraso de 1 segundo após atingir 100%
+                        }, 1000);
                     },
-                    error: function(error) {
+                    error: function() {
                         alert("Erro ao iniciar o download.");
-                        $('#loadingMessage').hide();  // Ocultar a mensagem em caso de erro
+                        $('#loadingMessage').hide();
                     }
                 });
 
-                // Simula o progresso da barra de forma fictícia
                 let progress = 0;
                 let interval = setInterval(function() {
                     if (progress < 100) {
                         progress += 10;
-                        $('#progressBar').css('width', progress + '%');
-                        $('#progressBar').text(progress + '%');
+                        $('#progressBar').css('width', progress + '%').text(progress + '%');
                     } else {
                         clearInterval(interval);
                     }
@@ -115,7 +100,7 @@
                         alert(response.message);
                         $('#linksDownload').html('');
                     },
-                    error: function(error) {
+                    error: function() {
                         alert("Erro ao limpar arquivos.");
                     }
                 });
