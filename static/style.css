@@ -1,260 +1,140 @@
-/* Definindo as cores principais com branco, azul e vermelho */
-:root {
-    --background: #1a1a1a;  /* Fundo escuro para destacar o conteúdo */
-    --foreground: #ffffff;  /* Texto branco */
-    --selection: #44475a;   /* Cor de seleção */
-    --comment: white;     /* Comentários em azul */
-    --cyan: #8be9fd;        /* Azul claro */
-    --green: #50fa7b;       /* Verde (não utilizado nesse esquema, mas mantido) */
-    --orange: #ffb86c;      /* Laranja (não utilizado) */
-    --pink: #ff79c6;        /* Rosa (não utilizado) */
-    --purple: #bd93f9;      /* Roxo (não utilizado) */
-    --red: #ff5555;         /* Vermelho para destacar alertas e botões */
-    --yellow: #f1fa8c;      /* Amarelo (não utilizado) */
-}
-
-/* Resetando o padding e margin para garantir consistência */
-* {
+body {
+    background: #fdf8f4;
+    font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
-    box-sizing: border-box;
-}
-
-/* Corpo da página */
-body {
-    background-color: var(--background);
-    color: var(--foreground);
-    font-family: 'Arial', sans-serif;
-    font-size: 16px;
-    line-height: 1.6;
-    padding: 0 20px;
-    margin: 0;
-}
-
-/* Título principal */
-h1 {
     text-align: center;
-    color: var(--red);  /* Vermelho para o título */
-    margin-top: 50px;
-    font-size: 3rem;
 }
 
-/* Caixa de entrada de texto */
-textarea {
+/* Fundo com onda laranja */
+.wave-bg {
+    background: linear-gradient(90deg, #ff6600, #ff9933);
+    padding: 80px 20px;
+    clip-path: polygon(0 20%, 100% 0, 100% 80%, 0 100%);
+}
+
+/* Caixa central */
+.converter-box {
+    margin: auto;
+    background: #fff;
+    padding: 40px;
+    border-radius: 15px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.15);
+    max-width: 600px;
+}
+
+/* Título e descrição */
+h1 {
+    color: #ff6600;
+    margin-bottom: 10px;
+}
+p {
+    color: #555;
+    margin-bottom: 20px;
+}
+
+/* Campo de link */
+input[type="text"] {
     width: 100%;
-    height: 200px;
     padding: 15px;
-    margin-top: 20px;
-    border: 2px solid var(--comment);
+    border: 2px solid #ff6600;
     border-radius: 8px;
-    background-color: #1e1f29;
-    color: var(--foreground);
-    font-size: 1.2rem;
-    transition: border-color 0.3s ease-in-out;
+    font-size: 1rem;
+    margin-bottom: 20px;
 }
 
-textarea:focus {
-    border-color: var(--cyan);  /* Azul claro quando em foco */
-    outline: none;
-}
-
-/* Botões */
-button {
-    background-color: var(--red);  /* Vermelho para botões */
-    color: var(--foreground);
-    font-size: 1.2rem;
-    padding: 10px 20px;
-    margin-top: 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-button:hover {
-    background-color: var(--cyan);  /* Azul claro ao passar o mouse */
-}
-
-/* Estilos para o cabeçalho */
-.header {
+/* Botões e opções */
+.options {
     display: flex;
     justify-content: center;
-    align-items: center;
-    margin-top: 50px;
+    gap: 10px;
 }
-
-h1 {
-    color: var(--red);
-    font-size: 3rem;
-    margin-left: 16px;
-}
-
-.emoji {
-    width: 115px; /* Tamanho do emoji */
-    height: 80px; /* Tamanho do emoji */
-}
-
-
-/* Links de download */
-#linksDownload {
-    margin-top: 30px;
-}
-
-#linksDownload a {
-    color: var(--cyan);
-    font-size: 1.2rem;
-    text-decoration: none;
-    display: block;
-    margin-bottom: 10px;
-    transition: color 0.3s ease;
-}
-
-#linksDownload a:hover {
-    color: var(--red);  /* Vermelho no hover */
-}
-
-/* Botão Limpar */
-#limparBtn {
-    background-color: var(--red);  /* Vermelho para o botão Limpar */
-    color: var(--foreground);
-    font-size: 1.2rem;
-    padding: 10px 20px;
-    margin-top: 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-#limparBtn:hover {
-    background-color: var(--cyan);  /* Azul ao passar o mouse */
-}
-
-/* Estilo para mensagens de erro ou sucesso */
-.alert {
-    padding: 15px;
-    margin-top: 20px;
+select {
+    padding: 10px;
+    font-size: 1rem;
     border-radius: 8px;
-    font-size: 1.2rem;
-    font-weight: bold;
+    border: 1px solid #ccc;
+}
+button {
+    background: #28a745;
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    font-size: 1.1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+button:hover {
+    background: #218838;
 }
 
-.alert.success {
-    background-color: var(--green);  /* Verde para sucesso */
-    color: var(--background);
-}
-
-.alert.error {
-    background-color: var(--red);  /* Vermelho para erro */
-    color: var(--background);
-}
-
+/* Barra de progresso */
 #progressContainer {
     width: 100%;
-    background-color: #f3f3f3;
+    background: #eee;
     border-radius: 5px;
     margin-top: 20px;
     display: none;
 }
-
 #progressBar {
     width: 0;
-    height: 30px;
-    background-color: var(--cyan);  /* Azul para a barra de progresso */
+    height: 25px;
+    background: #ff6600;
     text-align: center;
     color: white;
-    line-height: 30px;
+    line-height: 25px;
     border-radius: 5px;
 }
 
-/* Estilos para o footer */
-footer {
-    background-color: var(--background);  /* Fundo escuro */
-    color: var(--foreground);             /* Texto claro */
-    padding: 20px 0;
-    text-align: center;
-    margin-top: 40px;
-    border-top: 2px solid var(--red);  /* Vermelho para a borda superior */
+/* Links de download */
+#linksDownload {
+    margin-top: 20px;
 }
-
-footer a {
-    color: var(--cyan);
+#linksDownload a {
+    display: block;
+    margin: 5px 0;
+    color: #007bff;
     text-decoration: none;
-    margin: 0 15px;
-    font-size: 1.1rem;
-    transition: color 0.3s ease;
+}
+#linksDownload a:hover {
+    text-decoration: underline;
 }
 
-footer a:hover {
-    color: var(--red);  /* Vermelho no hover */
+/* Botão limpar */
+.limpar {
+    margin-top: 20px;
+    background: #dc3545;
+}
+.limpar:hover {
+    background: #b52a37;
 }
 
-footer .footer-text {
-    font-size: 0.9rem;
-    color: var(--comment);
-}
-
-/* Estilo para o aviso de cuidado */
+/* Mensagem de alerta */
 .alert-warning {
-    background-color: var(--cyan);  /* Azul claro para a mensagem de alerta */
-    color: var(--background);       /* Texto branco */
+    background-color: #ffe08a;
+    color: #333;
     font-size: 1rem;
-    padding: 20px;
+    padding: 15px;
     margin-top: 20px;
     border-radius: 8px;
-    text-align: center;
     font-weight: bold;
 }
 
-.alert-warning a {
-    color: var(--background);
-    text-decoration: underline;
-    transition: color 0.3s ease;
+/* Rodapé */
+footer {
+    margin-top: 40px;
+    padding: 20px;
+    background: #222;
+    color: #fff;
 }
 
-.alert-warning a:hover {
-    color: var(--red);  /* Vermelho para links ao passar o mouse */
-}
-
-/* Estilos para o label */
-label[for="formato"] {
-    font-size: 16px;
-    font-weight: bold;
-    color: var(--foreground);
-    margin-bottom: 8px;
-    display: block; /* Faz com que o label ocupe a linha inteira */
-    margin-top: 20px;
-}
-
-/* Estilos para o select */
-select#formato {
+textarea {
     width: 100%;
-    padding: 10px;
-    font-size: 16px;
-    margin-top: 5px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    background-color: #fff;
-    color: black;
-    cursor: pointer;
-    transition: border-color 0.3s ease;
-}
-
-/* Estilo para o select quando em foco (ao clicar) */
-select#formato:focus {
-    border-color: var(--cyan);  /* Azul no foco */
-    outline: none; /* Remove o contorno padrão do navegador */
-}
-
-/* Estilos para as opções do select */
-select#formato option {
-    padding: 10px;
-    font-size: 16px;
-    color: black;
-    background-color: #fff;
-}
-
-/* Efeito hover para as opções */
-select#formato option:hover {
-    background-color: #f3f3f3;
+    padding: 15px;
+    border: 2px solid #ff6600;
+    border-radius: 8px;
+    font-size: 1rem;
+    margin-bottom: 20px;
+    resize: vertical; /* usuário pode aumentar/diminuir */
 }
