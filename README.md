@@ -56,5 +56,5 @@ Este projeto está licenciado sob a licença MIT - consulte o arquivo LICENSE pa
 
 
 **Imagem**
-![1](https://github.com/user-attachments/assets/44ab46e3-9810-4e98-8867-6fa1b33fe7f0)
-![02](https://github.com/user-attachments/assets/ab91ddaa-cae8-4b74-b4fd-7542cd0bac84)
+<img width="1920" height="719" alt="{335F79FF-B9C7-43E3-978E-FE48043E06DF}" src="https://github.com/user-attachments/assets/944b006c-9f22-4921-b8cc-d3917e835628" />
+
