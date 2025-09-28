@@ -3,42 +3,60 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Conversor de Música MP3/MP4</title>
+    <title>Conversor de Mídia Online</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <!-- Ícones para um toque profissional -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
-    <div class="wave-bg">
-        <div class="converter-box">
-            <h1>Conversor de Música</h1>
-            <p>Cole um ou mais links (um por linha) para converter em MP3 ou MP4</p>
+    <div class="background-animation"></div> <!-- Novo elemento para a animação de fundo -->
 
-            <!-- AGORA É TEXTAREA -->
-            <textarea id="urls" placeholder="Cole os links aqui..." rows="6"></textarea>
-
-            <div class="options">
-                <select id="formato" name="formato">
-                    <option value="mp3">MP3</option>
-                    <option value="mp4">MP4</option>
-                </select>
-                <button id="baixarBtn">Converter</button>
+    <div class="container">
+        <div class="converter-card">
+            <div class="header-content">
+                <i class="fas fa-music converter-icon"></i>
+                <h1>Conversor de Mídia</h1>
+                <p class="subtitle">Converta seus links favoritos para MP3 ou MP4 com facilidade.</p>
             </div>
 
-            <div id="progressContainer">
-                <div id="progressBar">0%</div>
+            <div class="input-section">
+                <textarea id="urls" placeholder="Cole seus links aqui (um por linha)..." rows="7"></textarea>
             </div>
 
-            <div id="loadingMessage" class="alert-warning" style="display:none;">
-                <span>Ainda estamos finalizando...</span>
+            <div class="options-bar">
+                <div class="format-select-wrapper">
+                    <i class="fas fa-file-audio format-icon"></i>
+                    <select id="formato" name="formato">
+                        <option value="mp3">MP3 - Áudio</option>
+                        <option value="mp4">MP4 - Vídeo</option>
+                    </select>
+                </div>
+                <button id="baixarBtn" class="convert-button">
+                    <i class="fas fa-sync-alt"></i> Converter Agora
+                </button>
             </div>
 
-            <div id="linksDownload"></div>
+            <div id="progressContainer" class="progress-container" style="display:none;">
+                <div id="progressBar" class="progress-bar">
+                    <span id="progressText">0%</span>
+                </div>
+            </div>
 
-            <button id="limparBtn" class="limpar">Limpar Arquivos</button>
+            <div id="loadingMessage" class="status-message loading" style="display:none;">
+                <i class="fas fa-spinner fa-spin"></i>
+                <span>Estamos trabalhando na sua conversão...</span>
+            </div>
+
+            <div id="linksDownload" class="download-links"></div>
+
+            <button id="limparBtn" class="clear-button">
+                <i class="fas fa-trash-alt"></i> Limpar Downloads
+            </button>
         </div>
     </div>
 
     <footer>
-        <p>&copy; 2024 Conversor de Música MP3/MP4 - Todos os direitos reservados.</p>
+        <p>&copy; 2024 Conversor de Mídia Online. Todos os direitos reservados.</p>
     </footer>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -49,47 +67,63 @@
                 var formato = $('#formato').val();
                 
                 if (!urls) {
-                    alert("Por favor, insira pelo menos um link.");
+                    alert("Por favor, insira pelo menos um link para converter.");
                     return;
                 }
 
+                $('#linksDownload').empty(); // Limpa links anteriores
                 $('#progressContainer').show();
-                $('#loadingMessage').show();
+                $('#loadingMessage').show().removeClass('success error').addClass('loading').html('<i class="fas fa-spinner fa-spin"></i> <span>Estamos trabalhando na sua conversão...</span>');
+                $('#progressBar').css('width', '0%').find('#progressText').text('0%');
+                $('#baixarBtn').prop('disabled', true).addClass('converting').html('<i class="fas fa-spinner fa-spin"></i> Convertendo...');
 
                 $.ajax({
                     url: '/baixar',
                     type: 'POST',
                     data: { 'urls': urls, 'formato': formato },
+                    xhr: function() {
+                        var xhr = new window.XMLHttpRequest();
+                        // Monitorar o progresso do upload (se houver, mas para download não é o principal)
+                        xhr.upload.addEventListener("progress", function(evt) {
+                            if (evt.lengthComputable) {
+                                var percentComplete = Math.round((evt.loaded / evt.total) * 100);
+                                // A atualização de progresso mais precisa viria do backend durante a conversão
+                                // Por enquanto, isso simula um progresso inicial.
+                                if (percentComplete < 100) { // Não deixe 100% até o sucesso
+                                    $('#progressBar').css('width', percentComplete + '%').find('#progressText').text(percentComplete + '%');
+                                }
+                            }
+                        }, false);
+                        return xhr;
+                    },
                     success: function(response) {
                         if (response.status === "sucesso") {
-                            $('#linksDownload').html('');
                             response.files.forEach(function(file) {
                                 $('#linksDownload').append(
-                                    '<a href="/baixar_arquivo/' + file + '" download>' + file + '</a><br>'
+                                    `<div class="download-item">
+                                        <i class="fas fa-download download-icon"></i>
+                                        <a href="/baixar_arquivo/${file}" download>${file}</a>
+                                    </div>`
                                 );
                             });
+                            $('#progressBar').css('width', '100%').find('#progressText').text('100%');
+                            $('#loadingMessage').removeClass('loading').addClass('success').html('<i class="fas fa-check-circle"></i> <span>Conversão concluída com sucesso!</span>');
+                        } else {
+                            $('#loadingMessage').removeClass('loading').addClass('error').html('<i class="fas fa-exclamation-triangle"></i> <span>Erro na conversão: ' + (response.message || 'Tente novamente.') + '</span>');
                         }
-                        $('#progressBar').css('width', '100%').text('100%');
-                        setTimeout(function() {
-                            alert("Download concluído com sucesso!");
-                            $('#loadingMessage').hide();
-                        }, 1000);
                     },
-                    error: function() {
-                        alert("Erro ao iniciar o download.");
-                        $('#loadingMessage').hide();
+                    error: function(xhr, status, error) {
+                        $('#loadingMessage').removeClass('loading').addClass('error').html('<i class="fas fa-exclamation-circle"></i> <span>Ocorreu um erro: ' + (xhr.responseText ? JSON.parse(xhr.responseText).message : 'Tente novamente mais tarde.') + '</span>');
+                    },
+                    complete: function() {
+                        $('#baixarBtn').prop('disabled', false).removeClass('converting').html('<i class="fas fa-sync-alt"></i> Converter Agora');
+                        // Opcional: esconder mensagens após um tempo, ou deixar para o usuário limpar
+                        // setTimeout(function() {
+                        //    $('#loadingMessage').fadeOut(500);
+                        //    $('#progressContainer').fadeOut(500);
+                        // }, 5000);
                     }
                 });
-
-                let progress = 0;
-                let interval = setInterval(function() {
-                    if (progress < 100) {
-                        progress += 10;
-                        $('#progressBar').css('width', progress + '%').text(progress + '%');
-                    } else {
-                        clearInterval(interval);
-                    }
-                }, 500);
             });
 
             $('#limparBtn').click(function() {
@@ -99,6 +133,9 @@
                     success: function(response) {
                         alert(response.message);
                         $('#linksDownload').html('');
+                        $('#loadingMessage').hide().removeClass('success error loading').html('');
+                        $('#progressContainer').hide();
+                        $('#urls').val(''); // Limpa a textarea também
                     },
                     error: function() {
                         alert("Erro ao limpar arquivos.");

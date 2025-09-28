@@ -1,140 +1,441 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+
+:root {
+    --primary-color: #FF6B6B; /* Vermelho mais vibrante */
+    --secondary-color: #4ECDC4; /* Azul esverdeado */
+    --accent-color: #FFE66D; /* Amarelo suave */
+    --dark-color: #2F3640; /* Cinza escuro para texto */
+    --light-bg: #F0F2F5; /* Fundo mais claro */
+    --card-bg: #FFFFFF; /* Fundo do card */
+    --border-radius: 12px;
+    --shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    --transition-speed: 0.3s ease-in-out;
+}
+
 body {
-    background: #fdf8f4;
-    font-family: Arial, sans-serif;
+    font-family: 'Poppins', sans-serif;
     margin: 0;
     padding: 0;
     text-align: center;
+    background-color: var(--light-bg);
+    color: var(--dark-color);
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    overflow-x: hidden; /* Evita rolagem horizontal indesejada */
+    position: relative;
 }
 
-/* Fundo com onda laranja */
-.wave-bg {
-    background: linear-gradient(90deg, #ff6600, #ff9933);
-    padding: 80px 20px;
-    clip-path: polygon(0 20%, 100% 0, 100% 80%, 0 100%);
-}
-
-/* Caixa central */
-.converter-box {
-    margin: auto;
-    background: #fff;
-    padding: 40px;
-    border-radius: 15px;
-    box-shadow: 0 0 20px rgba(0,0,0,0.15);
-    max-width: 600px;
-}
-
-/* Título e descrição */
-h1 {
-    color: #ff6600;
-    margin-bottom: 10px;
-}
-p {
-    color: #555;
-    margin-bottom: 20px;
-}
-
-/* Campo de link */
-input[type="text"] {
+/* Animação de fundo moderna */
+.background-animation {
+    position: absolute;
+    top: 0;
+    left: 0;
     width: 100%;
-    padding: 15px;
-    border: 2px solid #ff6600;
-    border-radius: 8px;
-    font-size: 1rem;
-    margin-bottom: 20px;
+    height: 100%;
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+    clip-path: polygon(0 0, 100% 0, 100% 70%, 0 100%); /* Forma dinâmica */
+    opacity: 0.8;
+    z-index: -1;
+    animation: gradientShift 20s ease infinite alternate; /* Animação suave */
 }
 
-/* Botões e opções */
-.options {
+@keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+
+.container {
+    flex-grow: 1; /* Permite que o container ocupe o espaço restante */
     display: flex;
     justify-content: center;
-    gap: 10px;
+    align-items: center;
+    padding: 30px;
+    position: relative; /* Para z-index */
+    z-index: 1; /* Garante que o conteúdo esteja acima da animação de fundo */
 }
-select {
-    padding: 10px;
+
+.converter-card {
+    background: var(--card-bg);
+    padding: 40px;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    max-width: 650px;
+    width: 100%;
+    transition: var(--transition-speed);
+    position: relative;
+    overflow: hidden;
+    transform: translateY(0);
+    animation: fadeInScale 0.8s ease-out forwards;
+}
+
+@keyframes fadeInScale {
+    from {
+        opacity: 0;
+        transform: translateY(20px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.header-content {
+    margin-bottom: 30px;
+}
+
+.converter-icon {
+    font-size: 3.5rem;
+    color: var(--primary-color);
+    margin-bottom: 15px;
+    animation: bounceIn 1s ease-out;
+}
+
+@keyframes bounceIn {
+    0% { transform: scale(0.3); opacity: 0; }
+    50% { transform: scale(1.1); opacity: 1; }
+    70% { transform: scale(0.9); }
+    100% { transform: scale(1); }
+}
+
+h1 {
+    color: var(--dark-color);
+    font-size: 2.2rem;
+    margin-bottom: 10px;
+    font-weight: 700;
+}
+
+.subtitle {
+    color: #6B7280;
     font-size: 1rem;
-    border-radius: 8px;
-    border: 1px solid #ccc;
+    margin-bottom: 25px;
+    line-height: 1.6;
 }
-button {
-    background: #28a745;
+
+/* Campo de Texto (textarea) */
+.input-section {
+    margin-bottom: 25px;
+}
+
+textarea {
+    width: calc(100% - 30px); /* Ajusta a largura com padding */
+    padding: 15px;
+    border: 2px solid var(--primary-color);
+    border-radius: var(--border-radius);
+    font-size: 1rem;
+    font-family: 'Poppins', sans-serif;
+    color: var(--dark-color);
+    background-color: #F8FAFC;
+    transition: all var(--transition-speed);
+    resize: vertical;
+    min-height: 120px;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.06);
+}
+
+textarea:focus {
+    border-color: var(--secondary-color);
+    box-shadow: 0 0 0 3px rgba(78, 205, 196, 0.2); /* Foco mais suave */
+    outline: none;
+    background-color: #FFFFFF;
+}
+
+textarea::placeholder {
+    color: #A0AEC0;
+}
+
+/* Opções e Botão */
+.options-bar {
+    display: flex;
+    flex-wrap: wrap; /* Permite que os itens quebrem linha em telas pequenas */
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+.format-select-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    background-color: #F8FAFC;
+    border: 1px solid #E2E8F0;
+    border-radius: var(--border-radius);
+    padding: 8px 15px;
+    transition: all var(--transition-speed);
+}
+
+.format-select-wrapper:hover {
+    border-color: var(--secondary-color);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+.format-icon {
+    color: var(--secondary-color);
+    margin-right: 10px;
+    font-size: 1.1rem;
+}
+
+select {
+    appearance: none; /* Remove estilo padrão do sistema operacional */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    padding: 8px 10px;
+    font-size: 1rem;
+    border: none;
+    background-color: transparent;
+    color: var(--dark-color);
+    font-family: 'Poppins', sans-serif;
+    cursor: pointer;
+    outline: none;
+}
+
+select:focus {
+    outline: none;
+}
+
+/* Estilo para a seta do select (customizada, se necessário) */
+.format-select-wrapper::after {
+    content: '\f078'; /* Código para ícone de seta para baixo do Font Awesome */
+    font-family: 'Font Awesome 5 Free';
+    font-weight: 900;
+    position: absolute;
+    right: 15px;
+    color: var(--secondary-color);
+    pointer-events: none; /* Garante que o clique passe para o select */
+}
+
+
+.convert-button, .clear-button {
+    background: var(--primary-color);
     color: white;
     border: none;
-    padding: 12px 25px;
+    padding: 12px 28px;
     font-size: 1.1rem;
-    border-radius: 8px;
+    font-weight: 600;
+    border-radius: var(--border-radius);
     cursor: pointer;
-    transition: 0.3s;
+    transition: all var(--transition-speed);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 6px 15px rgba(255, 107, 107, 0.3);
 }
-button:hover {
-    background: #218838;
+
+.convert-button:hover {
+    background: #E55C5C;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(255, 107, 107, 0.4);
+}
+
+.convert-button:active {
+    transform: translateY(0);
+    box-shadow: 0 4px 10px rgba(255, 107, 107, 0.3);
+}
+
+.convert-button.converting {
+    background: #FF9F1C; /* Cor diferente durante a conversão */
+    box-shadow: 0 6px 15px rgba(255, 159, 28, 0.3);
+    cursor: not-allowed;
+}
+
+.convert-button:disabled {
+    background: #cccccc;
+    cursor: not-allowed;
+    box-shadow: none;
 }
 
 /* Barra de progresso */
-#progressContainer {
+.progress-container {
     width: 100%;
-    background: #eee;
-    border-radius: 5px;
-    margin-top: 20px;
-    display: none;
+    background: #E2E8F0;
+    border-radius: var(--border-radius);
+    margin-top: 25px;
+    height: 35px;
+    overflow: hidden; /* Garante que a barra interna não vaze */
+    display: none; /* Inicialmente oculto */
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
 }
-#progressBar {
+
+.progress-bar {
     width: 0;
-    height: 25px;
-    background: #ff6600;
+    height: 100%;
+    background: linear-gradient(90deg, var(--secondary-color), #6DCEB3);
     text-align: center;
     color: white;
-    line-height: 25px;
-    border-radius: 5px;
+    line-height: 35px;
+    border-radius: var(--border-radius);
+    transition: width 0.5s ease-out; /* Animação suave para a largura */
+    font-weight: 600;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    white-space: nowrap; /* Impede que o texto quebre */
+    overflow: hidden;
+}
+
+/* Mensagens de status */
+.status-message {
+    padding: 15px 20px;
+    margin-top: 25px;
+    border-radius: var(--border-radius);
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    font-size: 1rem;
+    transition: all var(--transition-speed);
+}
+
+.status-message.loading {
+    background-color: #FFF3CD;
+    color: #856404;
+    border: 1px solid #FFEEBA;
+}
+
+.status-message.loading i {
+    color: #FF9F1C;
+}
+
+.status-message.success {
+    background-color: #D4EDDA;
+    color: #155724;
+    border: 1px solid #C3E6CB;
+}
+
+.status-message.success i {
+    color: #28A745;
+}
+
+.status-message.error {
+    background-color: #F8D7DA;
+    color: #721C24;
+    border: 1px solid #F5C6CB;
+}
+
+.status-message.error i {
+    color: #DC3545;
 }
 
 /* Links de download */
-#linksDownload {
-    margin-top: 20px;
+.download-links {
+    margin-top: 30px;
+    max-height: 200px;
+    overflow-y: auto; /* Adiciona scroll se muitos links */
+    padding: 10px;
+    border-radius: var(--border-radius);
+    background-color: #F8FAFC;
+    border: 1px solid #E2E8F0;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.05);
 }
-#linksDownload a {
-    display: block;
-    margin: 5px 0;
-    color: #007bff;
+
+.download-item {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start; /* Alinha à esquerda */
+    margin: 8px 0;
+    padding: 8px;
+    border-bottom: 1px solid #EFF2F7;
+    transition: background-color 0.2s ease;
+}
+
+.download-item:last-child {
+    border-bottom: none;
+}
+
+.download-item:hover {
+    background-color: #F0F2F5;
+}
+
+.download-icon {
+    color: var(--secondary-color);
+    margin-right: 12px;
+    font-size: 1rem;
+}
+
+.download-links a {
+    flex-grow: 1; /* Permite que o link ocupe o espaço restante */
+    color: var(--dark-color);
     text-decoration: none;
+    font-weight: 500;
+    text-align: left; /* Alinha o texto do link à esquerda */
+    word-break: break-all; /* Quebra o texto se for muito longo */
+    transition: color var(--transition-speed);
 }
-#linksDownload a:hover {
+.download-links a:hover {
+    color: var(--primary-color);
     text-decoration: underline;
 }
 
-/* Botão limpar */
-.limpar {
-    margin-top: 20px;
-    background: #dc3545;
-}
-.limpar:hover {
-    background: #b52a37;
+/* Botão de limpar */
+.clear-button {
+    background: #6C757D; /* Cinza mais neutro */
+    margin-top: 30px;
+    box-shadow: 0 6px 15px rgba(108, 117, 125, 0.2);
 }
 
-/* Mensagem de alerta */
-.alert-warning {
-    background-color: #ffe08a;
-    color: #333;
-    font-size: 1rem;
-    padding: 15px;
-    margin-top: 20px;
-    border-radius: 8px;
-    font-weight: bold;
+.clear-button:hover {
+    background: #5A6268;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(108, 117, 125, 0.3);
+}
+
+.clear-button:active {
+    transform: translateY(0);
+    box-shadow: 0 4px 10px rgba(108, 117, 125, 0.2);
 }
 
 /* Rodapé */
 footer {
-    margin-top: 40px;
-    padding: 20px;
-    background: #222;
-    color: #fff;
+    margin-top: auto; /* Empurra o rodapé para o final */
+    padding: 25px;
+    background: var(--dark-color);
+    color: #C0C5CC;
+    font-size: 0.9rem;
+    box-shadow: 0 -5px 15px rgba(0,0,0,0.1);
+    position: relative; /* Para z-index */
+    z-index: 1;
 }
 
-textarea {
-    width: 100%;
-    padding: 15px;
-    border: 2px solid #ff6600;
-    border-radius: 8px;
-    font-size: 1rem;
-    margin-bottom: 20px;
-    resize: vertical; /* usuário pode aumentar/diminuir */
+/* Responsividade */
+@media (max-width: 768px) {
+    .converter-card {
+        padding: 30px;
+        margin: 20px;
+    }
+    h1 {
+        font-size: 1.8rem;
+    }
+    .subtitle {
+        font-size: 0.9rem;
+    }
+    .options-bar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .convert-button, .clear-button {
+        width: 100%;
+        padding: 12px 20px;
+        font-size: 1rem;
+    }
+    .format-select-wrapper {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .converter-card {
+        padding: 20px;
+    }
+    h1 {
+        font-size: 1.5rem;
+    }
+    .converter-icon {
+        font-size: 3rem;
+    }
+    textarea {
+        min-height: 100px;
+    }
 }
